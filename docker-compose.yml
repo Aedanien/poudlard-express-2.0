@@ -1,0 +1,37 @@
+version: '3'
+services:
+  web:
+    build: .
+    ports:
+      - "5000:5000"
+    expose:
+      - '5000'
+    volumes:
+      - ./poudlard-express:/poudlard-express
+    healthcheck:
+      test: curl --fail -s http://localhost:3306/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
+
+  db:
+    image: mysql/mysql-server
+    ports:
+      - '33062:33062'
+    expose:
+      - '33062'
+    environment:
+      MYSQL_DATABASE: 'db'
+      MYSQL_USER: 'user'
+      MYSQL_PASSWORD: 'password'
+      MYSQL_ROOT_PASSWORD: 'password'
+      # mysql -u root -p
+    volumes:
+      - ./db:/db
+    healthcheck:
+      test: curl --fail -s http://localhost:3306/ || exit 1
+      interval: 30s
+      timeout: 10s
+      retries: 5
+
